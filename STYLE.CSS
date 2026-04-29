@@ -1,0 +1,94 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    margin-top: 30%;
+    background-color: aquamarine;
+
+
+}
+
+.form {
+    width: 400px;
+    height: auto;
+
+    background-color: bisque;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    border-radius: 10px 10px 0 0;
+    border: none;
+    outline: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) inset;
+    font-weight: bold;
+}
+
+.input::placeholder {
+    color: lightgrey;
+}
+
+.list {
+    margin: 0;
+    padding: 0;
+
+}
+
+.list li {
+    list-style-type: none;
+    padding: 20px;
+    padding-right: 80px;
+    /* 🔥 reserve space for icons */
+    border-top: 2px dotted gray;
+    color: rgb(23, 121, 207);
+
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    overflow: hidden;
+    /* 🔥 stop text going under icons */
+}
+
+.list li .fa-square-check {
+    color: green;
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    align-content: center;
+    justify-content: center;
+
+}
+
+.task-text {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    max-width: 100%;
+    scrollbar-width: none;
+}
+
+.list li .fa-trash {
+    color: red;
+    position: absolute;
+    right: 40px;
+    cursor: pointer;
+    align-content: center;
+    justify-content: center;
+}
+
+.list li.checked {
+    text-decoration: line-through;
+    color: lightslategray;
+
+}
+
+.list li.checked .fa-square-check {
+    color: rgb(157, 155, 155);
+}
