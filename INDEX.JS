@@ -1,75 +1,82 @@
 const formEl = document.querySelector(".form");
 const inpEl = document.querySelector(".input");
 const ulEl = document.querySelector(".list");
+const progressBar = document.getElementById("progress-bar");
+const taskCount = document.getElementById("task-count");
 
+let list = JSON.parse(localStorage.getItem("list")) || [];
 
-
-let list = JSON.parse(localStorage.getItem("list"));
-
-if (!Array.isArray(list)) {
-    list = [];
-}
-
+// Initial Load
 list.forEach(task => {
-    todolist(task);
+    createTodoElement(task);
 });
-
+updateStats();
 
 formEl.addEventListener("submit", (event) => {
     event.preventDefault();
-    todolist();
-})
+    if (inpEl.value.trim() === "") return;
+    createTodoElement();
+    updateLocalStorage();
+});
 
+function createTodoElement(task) {
+    let taskText = inpEl.value;
+    if (task) taskText = task.name;
 
-function todolist(task) {
-    let newEl = inpEl.value;
-    if (task) {
-        newEl = task.name;
-    };
     const liEl = document.createElement("li");
+    if (task && task.checked) liEl.classList.add("checked");
 
-    if (task && task.checked) {
-        liEl.classList.add("checked");
-    };
+    liEl.innerHTML = `
+        <span class="task-text">${taskText}</span>
+        <div class="actions">
+            <i class="fa-solid fa-square-check btn-check"></i>
+            <i class="fa-solid fa-trash btn-delete"></i>
+        </div>
+    `;
 
-    const textSpan = document.createElement("span");
-    textSpan.classList.add("task-text");
-    textSpan.innerText = newEl;
-    liEl.appendChild(textSpan);
     ulEl.appendChild(liEl);
     inpEl.value = "";
 
-    const checkEl = document.createElement("div");
-    checkEl.innerHTML = `<i class="fa-solid fa-square-check"></i>`;
-    liEl.appendChild(checkEl);
-
-
-    const trashEl = document.createElement("div");
-    trashEl.innerHTML = `<i class="fa-solid fa-trash"></i>`;
-    liEl.appendChild(trashEl);
-
-    checkEl.addEventListener("click", () => {
+    // Event Listeners
+    liEl.querySelector(".btn-check").addEventListener("click", () => {
         liEl.classList.toggle("checked");
         updateLocalStorage();
+    });
 
-    })
-    trashEl.addEventListener("click", () => {
-        liEl.remove();
-        updateLocalStorage();
-    })
-    updateLocalStorage();
+    liEl.querySelector(".btn-delete").addEventListener("click", () => {
+        liEl.style.transform = "translateX(20px)";
+        liEl.style.opacity = "0";
+        setTimeout(() => {
+            liEl.remove();
+            updateLocalStorage();
+        }, 2000); // Smooth fade out
+    });
+}
 
+function updateStats() {
+    const total = document.querySelectorAll("li").length;
+    const completed = document.querySelectorAll("li.checked").length;
+
+    // Update Progress Bar
+    const percent = total === 0 ? 0 : (completed / total) * 100;
+    progressBar.style.width = percent + "%";
+
+    // Update Text
+    const pending = total - completed;
+    taskCount.innerText = `${pending} tasks pending`;
 }
 
 function updateLocalStorage() {
     const liEls = document.querySelectorAll("li");
-    list = [];
-    liEls.forEach(liEl => {
-        list.push({
-            name: liEl.innerText,
-            checked: liEl.classList.contains("checked")
-        })
-    })
-    localStorage.setItem("list", JSON.stringify(list));
+    const updatedList = [];
 
+    liEls.forEach(liEl => {
+        updatedList.push({
+            name: liEl.querySelector(".task-text").innerText,
+            checked: liEl.classList.contains("checked")
+        });
+    });
+
+    localStorage.setItem("list", JSON.stringify(updatedList));
+    updateStats();
 }
